@@ -93,12 +93,3 @@ def structness(image: np.ndarray, ignored: List=None) -> Tuple[float, float]:
     structness_of_darkness = _structness_of(_darkness, directions)
     structness_of_lightness = _structness_of(_lightness, directions)
     return structness_of_darkness, structness_of_lightness
-
-
-def as_image(data: np.ndarray, x: np.ndarray, y: np.ndarray, default=-1) -> \
-        np.ndarray:
-    translated_x, translated_y = x - np.min(x), y - np.min(y)
-    rows, columns = np.max(translated_y) + 1, np.max(translated_x) + 1
-    cube = default * np.ones((rows, columns, data.shape[1]))
-    cube[translated_y, translated_x] = data
-    return cube
