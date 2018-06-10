@@ -4,6 +4,8 @@ import numpy as np
 import numpy.testing as npt
 
 import algorithm
+import algorithm._spectre_adapter
+import algorithm._structness as sts
 
 
 class TestDiscretize(unittest.TestCase):
@@ -15,7 +17,7 @@ class TestDiscretize(unittest.TestCase):
             [0, 1, 3, 4, 7, 4]
         ], dtype=np.uint8) + 5
         all_allowed = np.ones(image.shape, dtype=bool)
-        discrete = algorithm._discretize(image, all_allowed)
+        discrete = sts._discretize(image, all_allowed)
         npt.assert_equal(discrete, image-5)
 
 
@@ -27,7 +29,7 @@ class TestGreycomatrix(unittest.TestCase):
             [0, 2, 3, 5, 6, 7]
         ], dtype=np.uint8)
         all_allowed = np.ones(image.shape, dtype=bool)
-        gcm = algorithm._greycomatrix(image, all_allowed)
+        gcm = sts._greycomatrix(image, all_allowed)
         twos_right_to_zeros = 2
         self.assertEqual(gcm[0, 2, 0], twos_right_to_zeros)
         threes_right_up_zeros = 1
@@ -45,7 +47,7 @@ class TestGreycomatrix(unittest.TestCase):
         ], dtype=np.uint8)
         remove_zero_over_six_and_left_to_two = np.ones(image.shape, dtype=bool)
         remove_zero_over_six_and_left_to_two[1, -2] = False
-        gcm = algorithm._greycomatrix(image, remove_zero_over_six_and_left_to_two)
+        gcm = sts._greycomatrix(image, remove_zero_over_six_and_left_to_two)
         twos_right_to_zeros = 1
         self.assertEqual(gcm[0, 2, 0], twos_right_to_zeros)
         threes_right_up_zeros = 1
@@ -64,7 +66,7 @@ class TestStructness(unittest.TestCase):
             [0, 2, 3, 5, 6, 7],
             [0, 1, 3, 4, 7, 4]
         ], dtype=np.uint8)
-        darkness, lightness = algorithm.structness(image)
+        darkness, lightness = sts.structness(image)
         self.assertAlmostEqual(darkness, 16)
         self.assertAlmostEqual(lightness, 21)
 

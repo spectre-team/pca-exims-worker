@@ -2,7 +2,6 @@ from functools import partial
 from typing import Callable, List, Tuple
 
 import numpy as np
-from spdata.types import Coordinates, Dataset
 from skimage import feature as ft
 
 import matlab_alikes as stats
@@ -85,6 +84,8 @@ def _structness_of(selector: _BlockSelector, directions: np.ndarray) -> float:
 def structness(image: np.ndarray, ignored: List=None) -> Tuple[float, float]:
     if ignored is None:
         ignored = []
+    if len(image.shape) != 2:
+        raise ValueError(f'Expected 2D image, got {len(image.shape)}D.')
     mask = _ignorance_mask(image, ignored)
     discrete = _discretize(image, mask)
     greycomatrix = _greycomatrix(discrete, mask)
