@@ -10,7 +10,7 @@ from ._spectre_adapter import exims
 
 def _pca(dataset: Dataset, n_components: int, backend=dec.IncrementalPCA) -> \
         Tuple[dec.IncrementalPCA, np.ndarray]:
-    model = backend(n_components=n_components)
+    model = backend(n_components=n_components, batch_size=5 * n_components)
     transformed_spectra = model.fit_transform(dataset.spectra)
     return model, transformed_spectra
 
