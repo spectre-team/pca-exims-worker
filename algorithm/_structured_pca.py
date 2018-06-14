@@ -31,8 +31,8 @@ def _gradient(values: np.ndarray, order: int=1) -> np.ndarray:
 
 
 def _plateau_point(sorted_scores) -> int:
-    eps = np.finfo(float).eps
-    is_plateau = np.abs(_gradient(sorted_scores)) < eps
+    gradient = np.abs(_gradient(sorted_scores))
+    is_plateau = gradient <= np.percentile(gradient, 1)
     plateau_points = np.nonzero(is_plateau)[0]
     return int(np.median(plateau_points))
 
