@@ -4,6 +4,7 @@ Arguments:
     path to datasets
     dataset filename part
     metadata filename part
+    outliers filename part
     cache file path
     results root
 
@@ -27,6 +28,7 @@ Arguments = NamedTuple('Arguments', [
     ('datasets_root', str),
     ('data_suffix', str),
     ('metadata_suffix', str),
+    ('outliers_suffix', str),
     ('cache_path', str),
     ('results_root', str)
 ])
@@ -55,10 +57,14 @@ def dummy_mz(spectra: np.memmap) -> np.ndarray:
     return np.arange(spectra.shape[1])
 
 
-def load_dataset(root: str, data_suffix: str, metadata_suffix: str) -> Dataset:
+def load_dataset(root: str, data_suffix: str, metadata_suffix: str,
+                 outliers_suffix: str) -> Dataset:
+    preserved = ~np.load(os.path.join(root, outliers_suffix))
     spectra = np.load(os.path.join(root, data_suffix), mmap_mode='r')
+    spectra = spectra[preserved]
     metadata = np.loadtxt(os.path.join(root, metadata_suffix), skiprows=1,
                           delimiter=',', dtype=int)
+    metadata = metadata[preserved]
     coordinates = Coordinates(x=metadata[:, 1], y=metadata[:, 2],
                               z=np.zeros_like(metadata[:, 1]))
     mz = dummy_mz(spectra)
@@ -108,12 +114,12 @@ def save_result(modelled: ModelledDataset, results_root: str):
 
 
 if __name__ == '__main__':
-    arguments = Arguments(*sys.argv[1:6])
+    arguments = Arguments(*sys.argv[1:7])
     os.makedirs(arguments.results_root)
-    datasets = [
-        load_dataset(path, arguments.data_suffix, arguments.metadata_suffix)
-        for path in subdirectories(arguments.datasets_root)
-    ]
+    load = partial(load_dataset, data_suffix=arguments.data_suffix,
+                   metadata_suffix=arguments.metadata_suffix,
+                   outliers_suffix=arguments.outliers_suffix)
+    datasets = [load(path) for path in subdirectories(arguments.datasets_root)]
     merged_dataset = merge_datasets(datasets, arguments.cache_path)
     print(f'Merged {len(datasets)} datasets with total of '
           f'{merged_dataset.spectra.shape[0]} spectra.')
