@@ -12,13 +12,13 @@ def returns(value) -> MagicMock:
 
 
 simulated_structness = np.array([
-    1000, 400, 200, 100, 75, 60, 55, 50, 45, 35, 20, 5
+    1000, 400, 200, 100, 75, 60, 50, 50, 50, 35, 20, 5
 ])
 
 
-class TestInflectionPoint(unittest.TestCase):
+class TestPlateauPoint(unittest.TestCase):
     def test_finds_plateau(self):
-        inflection = spca._inflection_point(simulated_structness)
+        inflection = spca._plateau_point(simulated_structness)
         self.assertLessEqual(inflection, 9)
         self.assertGreaterEqual(inflection, 4)
 
