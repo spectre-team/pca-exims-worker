@@ -10,8 +10,9 @@ from ._structness import structness
 
 def as_image(data: np.ndarray, x: np.ndarray, y: np.ndarray, default=-1) -> \
         np.ndarray:
+    x, y = x.astype(int), y.astype(int)
     translated_x, translated_y = x - np.min(x), y - np.min(y)
-    rows, columns = np.max(translated_y) + 1, np.max(translated_x) + 1
+    rows, columns = int(np.max(translated_y) + 1), int(np.max(translated_x) + 1)
     if len(data.shape) < 2:
         data = data.reshape((data.shape[0], 1))
     cube = default * np.ones((rows, columns, data.shape[1]))
