@@ -1,0 +1,1 @@
+python -m experiment.grouping C:\Users\Grzegorz\Desktop\pca-model C:\Users\Grzegorz\Desktop\thyroid-cancer-cores-selected-all\spectra.npy C:\Users\Grzegorz\Desktop\thyroid-cancer-cores-selected-all-segmentation
